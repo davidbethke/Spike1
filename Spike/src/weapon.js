@@ -32,7 +32,7 @@ function initForm(){
 	//get values to fill in
 	for (var i=0; i< weapons.length; i++){
 		//document.write('Updating:'+weapons[i]);
-		selectWeapon.options[i]=new Option(weapons[i]['name'],i);
+		selectWeapon.options[i]=new Option(weapons[i].name,i);
 		//selectWeapon.options[i].Text=weapons[i];
 	}
 	for(var i=0; i< ammo.length;i++){
@@ -96,12 +96,17 @@ function initWeaponOF(objectFile){
 	objectFile.flush();
 	//var weapons=['rifle','pistol','revolver','glock'];
 	var weapons=[
-	             {'name':'rifle','number':'0'},
-	             {'name':'pistol','number':'1'},
-	             {'name':'revolver','number':'2'},
-	             {'name':'glock','number':'3'}];
+	             new Weapon('rifle','0'),
+	             new Weapon('pistol','1'),
+	             new Weapon('revolver','2'),
+	             new Weapon('glock','3')];
 	for(var i=0; i< weapons.length; i++){
 		objectFile.writeOF(i,weapons[i]);
 	}
+}
+
+function Weapon(name,number){
+	this.name=name;
+	this.number=number;
 }
 

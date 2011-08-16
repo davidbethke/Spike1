@@ -25,10 +25,12 @@ ObjectFile.Datastore.prototype.read= function(key){
 	//return "Read";
 };
 ObjectFile.Datastore.prototype.readAllOF= function(){
+	//read out an object must have a new object
 	var results= new Array();
 	for(var i=0; i< localStorage.length;i++){
-		results[i]=JSON.parse(localStorage[i]);
-		
+		var currentWeapon=new Weapon('name','number');
+		currentWeapon=JSON.parse(localStorage.getItem(i));
+		results[i]=currentWeapon;
 	}
 	return results;
 	//return "Read";
