@@ -10,10 +10,15 @@ ObjectFile.Datastore = function(){
 		var cacheId=nextId++;
 		var cacheSize='unassigned';
 		var cacheType='unassigned';
+		var objectCount=0;
+		
 		//public (this instance only)
 		this.getId= function(){ return cacheId;};
 		this.getSize= function(){ return cacheSize;};
 		this.getType= function(){return cacheType;};
+		this.getObjectCount=function(){return objectCount;};
+		this.incrementCount=function(){objectCount++;};
+		this.resetCount=function(){objectCount=0;};
 		this.setSize= function(size){cacheSize=size;};
 		this.setType= function(type){cacheType=type;};	
 	};
@@ -21,16 +26,22 @@ ObjectFile.Datastore = function(){
 }();
  
 ObjectFile.Datastore.prototype.read= function(key){
-	return localStorage[key];
+	return localStorage.getItem(key);
 	//return "Read";
 };
 ObjectFile.Datastore.prototype.readAllOF= function(){
 	//read out an object must have a new object
 	var results= new Array();
-	for(var i=0; i< localStorage.length;i++){
-		var currentWeapon=new Weapon('name','number');
-		currentWeapon=JSON.parse(localStorage.getItem(i));
-		results[i]=currentWeapon;
+	var cacheType=this.getType();
+	//for(var i=0; i< localStorage.length;i++){
+	for(var i=0; i< this.getObjectCount();i++){
+
+		//var currentWeapon=new Weapon('name','number');
+		//var currentWeapon;
+		var OFkey=cacheType+i;
+		
+		results[i]=JSON.parse(localStorage.getItem(OFkey));
+		//results[i]=currentWeapon;
 	}
 	return results;
 	//return "Read";
@@ -47,13 +58,13 @@ ObjectFile.Datastore.prototype.write= function(key,value){
 	}
 };
 ObjectFile.Datastore.prototype.writeOF= function(key,value){
-	
+	var OFkey=this.getType()+key;
 	if( window.localStorage == 'undefined'){
 		return 'no localstorage defined';
 	}
 	else{
-	
-	localStorage[key]=JSON.stringify(value);
+	this.incrementCount();
+	localStorage[OFkey]=JSON.stringify(value);
 	//return localStorage[key];
 	}
 };
@@ -61,7 +72,15 @@ ObjectFile.Datastore.prototype.remove = function(){
 	return "Remove";		
 };
 ObjectFile.Datastore.prototype.flush = function(){
-	localStorage.clear();
+	//Just remove of the keytype
+	var cacheType=this.getType();
+	for(var i=0; i< localStorage.length;i++){
+		//if(localStorage.getItem(cacheType+i)){
+			localStorage.removeItem(cacheType+i);
+		//}
+	}
+	this.resetCount();
+	//localStorage.clear();
 	return "Flush";
 };
 ObjectFile.Datastore.prototype.update = function(){
