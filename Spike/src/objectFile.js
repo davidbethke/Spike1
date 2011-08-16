@@ -19,7 +19,7 @@ ObjectFile.Datastore = function(){
 	};
 	
 }();
-
+ 
 ObjectFile.Datastore.prototype.read= function(key){
 	return localStorage[key];
 	//return "Read";

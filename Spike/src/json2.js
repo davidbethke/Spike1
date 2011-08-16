@@ -298,7 +298,7 @@ if (!JSON) {
                 length = value.length;
                 for (i = 0; i < length; i += 1) {
                     partial[i] = str(i, value) || 'null';
-                }
+                } 
 
 // Join all of the elements together, separated with commas, and wrap them in
 // brackets.
