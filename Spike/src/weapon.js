@@ -8,6 +8,7 @@ function eventWindowLoaded(){
 	initForm();
 	document.getElementById('formWeapon').onmouseup=weaponController;
 	document.getElementById('formAmmo').onmouseup=ammoController;
+	document.getElementById('formTarget').onmouseup=targetController;
 
 }
 
@@ -19,13 +20,19 @@ function initForm(){
 	daoManager= new DAOManager();
 	
 	var weaponDAO=daoManager.getWeaponDAO();
-	var weapons=weaponDAO.getWeaponList();
+	//var weapons=weaponDAO.getWeaponList();
+	var weapons=weaponDAO.getList();
+
 	
 	var ammoDAO=daoManager.getAmmoDAO();
-	var ammo=ammoDAO.getAmmoList();
+	//var ammo=ammoDAO.getAmmoList();
+	var ammo=ammoDAO.getList();
+
 	
 	var targetDAO=daoManager.getTargetDAO();
-	var targets=targetDAO.getTargetList();
+	//var targets=targetDAO.getTargetList();
+	var targets=targetDAO.getList();
+
 	
 	var selectWeapon=document.getElementById('selectWeapon');
 	var selectAmmo=document.getElementById('selectAmmo');
@@ -64,6 +71,12 @@ function ammoController(){
 	alert('You clicked:'+options[selected].text);
 }
 
+function targetController(){
+	var selected=document.getElementById('selectTarget').selectedIndex;
+	var options=document.getElementById('selectTarget').options;
+	alert('You clicked:'+options[selected].text);
+}
+
 function DAOManager(){
 	
 	//init object files
@@ -90,15 +103,25 @@ function DAOManager(){
 	this.initOF(objectFiles,initObjs);
 	
 	//create DAOs
-	
+	/*
 	var weaponDAO=new WeaponDAO(objectFiles[0]);
 	var ammoDAO= new AmmoDAO(objectFiles[1]);
 	var targetDAO= new TargetDAO(objectFiles[2]);
+	*/
+	var daoList=new Array();
+	for(var i=0;i< objectFiles.length;i++){
+		daoList[i]= new GenericDAO(objectFiles[i]);
+	}
 	//return DAOs
+	this.getWeaponDAO=function(){return daoList[0];};
+	this.getAmmoDAO=function(){return daoList[1];};
+	this.getTargetDAO=function(){return daoList[2];};
+
+	/*
 	this.getWeaponDAO=function(){return weaponDAO;};
 	this.getAmmoDAO=function(){return ammoDAO;};
 	this.getTargetDAO=function(){return targetDAO;};
-	
+	*/
 
 };
 
@@ -142,6 +165,12 @@ DAOManager.prototype.getOF=function(OF){
 	}
 	
 };
+
+function GenericDAO(OF){
+	var list= new Array();
+	list=OF.readAllOF();
+	this.getList=function(){return list;};
+}
 
 function WeaponDAO(OF){
 	var weaponList=new Array();
