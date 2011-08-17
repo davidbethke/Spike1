@@ -64,6 +64,7 @@ ObjectFile.Datastore.prototype.writeOF= function(key,value){
 	}
 	else{
 	this.incrementCount();
+	var tot=this.getObjectCount();
 	localStorage[OFkey]=JSON.stringify(value);
 	//return localStorage[key];
 	}
@@ -88,6 +89,10 @@ ObjectFile.Datastore.prototype.update = function(){
 };
 ObjectFile.Datastore.prototype.length = function(){
 	return localStorage.length;
-};/**
- * 
- */
+};
+ObjectFile.Datastore.prototype.initOF=function(objects){
+	 
+		for(var i=0;i<objects.length;i++){
+			this.writeOF(i, objects[i]);
+		}
+};
