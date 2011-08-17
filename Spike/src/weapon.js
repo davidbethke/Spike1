@@ -7,6 +7,7 @@
 window.addEventListener('load', eventWindowLoaded,false);
 
 function eventWindowLoaded(){
+	localStorage.clear();
 	var daoManager= new DAOManager();
 	initForm(daoManager);
 	//document.getElementById('formWeapon').onmouseup=weaponController;
@@ -22,13 +23,17 @@ function eventWindowLoaded(){
 function initForm(daoManager){
 	//var weapons=['rifles','pistol','revolver'];
 	
-	localStorage.clear();
+	
+	localStorage.setItem('name','dave');
 	//init dao Manager, get weaponDAO, ammoDAO
 	//var daoManager= new DAOManager();daoManager
 	
 	var weaponDAO=daoManager.getWeaponDAO();
 	//var weapons=weaponDAO.getWeaponList();
 	var weapons=weaponDAO.getList();
+	//experiment
+	var something=weaponDAO.getItem('2');
+	//experiment
 
 	
 	var ammoDAO=daoManager.getAmmoDAO();
@@ -40,7 +45,8 @@ function initForm(daoManager){
 	//var targets=targetDAO.getTargetList();
 	var targets=targetDAO.getList();
 
-	
+	localStorage.setItem('name1','elsa');
+
 	var selectWeapon=document.getElementById('selectWeapon');
 	var selectAmmo=document.getElementById('selectAmmo');
 	var selectTarget=document.getElementById('selectTarget');
@@ -50,7 +56,7 @@ function initForm(daoManager){
 	selectAmmo.options.length=0;
 	selectTarget.options.length=0;
 	
-	//get values to fill in
+	//get values to fill ininitForm
 	for (var i=0; i< weapons.length; i++){
 		//document.write('Updating:'+weapons[i]);
 		selectWeapon.options[i]=new Option(weapons[i].name,i);
@@ -69,7 +75,7 @@ function initForm(daoManager){
 
 function weaponController(daoManager){
 	var weaponDAO= daoManager.getWeaponDAO();
-	var list= new Array();
+	var list= new Array();weaponDAO
 	list=weaponDAO.getList();
 	
 	var selected=document.getElementById('selectWeapon').selectedIndex;
@@ -78,7 +84,7 @@ function weaponController(daoManager){
 	//var dbWeapon=JSON.parse(localStorage.getItem('weapon5'));
 	var len=window.localStorage.length;
 	var count=weaponDAO.getObjectCount();
-	alert('You clicked:'+options[selected].text+':'+options[selected].value+':name:'+'count:'+count+'db:'+list[options[selected].value].owner);
+	alert('You clicked:'+options[selected].text+':'+options[selected].value+':name:'+weapon.owner+'count:'+count+'db:'+list[options[selected].value].owner);
 }
 
 function ammoController(daoManager){

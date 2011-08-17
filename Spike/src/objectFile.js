@@ -72,6 +72,8 @@ ObjectFile.Datastore.prototype.writeOF= function(key,value){
 	this.incrementCount();
 	var tot=this.getObjectCount();
 	localStorage[OFkey]=JSON.stringify(value);
+	//check
+	//window.localStorage.setItem('dave'+OFkey,'dave'+key);
 	var immRead=this.readOF(key);
 	var empty;
 	//localStorage.setItem(OFkey,JSON.stringify(value));
