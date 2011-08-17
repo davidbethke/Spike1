@@ -2,22 +2,29 @@
 //init to fill in select
 
 //fill out the select in the page
+	
+
 window.addEventListener('load', eventWindowLoaded,false);
 
 function eventWindowLoaded(){
-	initForm();
-	document.getElementById('formWeapon').onmouseup=weaponController;
-	document.getElementById('formAmmo').onmouseup=ammoController;
+	var daoManager= new DAOManager();
+	initForm(daoManager);
+	//document.getElementById('formWeapon').onmouseup=weaponController;
+	document.getElementById('formWeapon').addEventListener('mouseup',function(){weaponController(daoManager)},false);
+
+	//document.getElementById('formAmmo').onmouseup=ammoController;
+	document.getElementById('formAmmo').addEventListener('mouseup',function(){ammoController(daoManager)},false);
 	document.getElementById('formTarget').onmouseup=targetController;
 
 }
 
-function initForm(){
+
+function initForm(daoManager){
 	//var weapons=['rifles','pistol','revolver'];
 	
 	localStorage.clear();
 	//init dao Manager, get weaponDAO, ammoDAO
-	daoManager= new DAOManager();
+	//var daoManager= new DAOManager();daoManager
 	
 	var weaponDAO=daoManager.getWeaponDAO();
 	//var weapons=weaponDAO.getWeaponList();
@@ -60,15 +67,27 @@ function initForm(){
 	
 }
 
-function weaponController(){
+function weaponController(daoManager){
+	var weaponDAO= daoManager.getWeaponDAO();
+	var list= new Array();
+	list=weaponDAO.getList();
+	
 	var selected=document.getElementById('selectWeapon').selectedIndex;
 	var options=document.getElementById('selectWeapon').options;
-	alert('You clicked:'+options[selected].text);
+	var weapon=weaponDAO.getItem(options[selected].value);
+	//var dbWeapon=JSON.parse(localStorage.getItem('weapon5'));
+	var len=window.localStorage.length;
+	var count=weaponDAO.getObjectCount();
+	alert('You clicked:'+options[selected].text+':'+options[selected].value+':name:'+'count:'+count+'db:'+list[options[selected].value].owner);
 }
-function ammoController(){
+
+function ammoController(daoManager){
+	var ammoDAO=daoManager.getAmmoDAO();
+	var list=new Array();
+	list=ammoDAO.readAllOF();
 	var selected=document.getElementById('selectAmmo').selectedIndex;
 	var options=document.getElementById('selectAmmo').options;
-	alert('You clicked:'+options[selected].text);
+	alert('You clicked:'+options[selected].text+'len:'+list.length+'name:'+list[0]);
 }
 
 function targetController(){
@@ -81,10 +100,13 @@ function DAOManager(){
 	
 	//init object files
 	var weapons=[
-	             new Weapon('rifle','0'),
-	             new Weapon('pistol','1'),
-	             new Weapon('revolver','2'),
-	             new Weapon('glock','3')];
+		             new Weapon('rifle','0','john wayne'),
+		             new Weapon('pistol','1','pepe'),
+		             new Weapon('revolver','2','cowboy'),
+		             new Weapon('glock','3','cop'),
+					new Weapon('s&w','4','dave'),
+					new Weapon('H&K','5','richguy'),
+					new Weapon('ruger','6','herr gunny')];
 	var ammo=[
 	             new Ammo('9mm','Winchester'),
 	             new Ammo('9mm','MagTech'),
@@ -99,30 +121,26 @@ function DAOManager(){
 	var initObjs=[weapons,ammo,targets];
 	var objectFiles=new Array();
 	objectFiles=this.getObjectFiles();
+	
+
 	this.getOF(objectFiles);
 	this.initOF(objectFiles,initObjs);
+	//daoManager.getOF(objectFiles);
+	//daoManager.initOF(objectFiles,initObjs);
 	
 	//create DAOs
-	/*
-	var weaponDAO=new WeaponDAO(objectFiles[0]);
-	var ammoDAO= new AmmoDAO(objectFiles[1]);
-	var targetDAO= new TargetDAO(objectFiles[2]);
-	*/
+	
 	var daoList=new Array();
 	for(var i=0;i< objectFiles.length;i++){
 		daoList[i]= new GenericDAO(objectFiles[i]);
 	}
+	//experiment
+	//alert('force it:'+daoList[0].getItem(2).name);
+	//experiment
 	//return DAOs
 	this.getWeaponDAO=function(){return daoList[0];};
 	this.getAmmoDAO=function(){return daoList[1];};
 	this.getTargetDAO=function(){return daoList[2];};
-
-	/*
-	this.getWeaponDAO=function(){return weaponDAO;};
-	this.getAmmoDAO=function(){return ammoDAO;};
-	this.getTargetDAO=function(){return targetDAO;};
-	*/
-
 };
 
 DAOManager.prototype.getObjectFiles=function(){
@@ -143,19 +161,8 @@ DAOManager.prototype.getObjectFiles=function(){
 
 DAOManager.prototype.initOF=function(OF,initObjs){
 	for(k=0;k<OF.length;k++){
-		
-			OF[k].initOF(initObjs[k]);
-
+		OF[k].initOF(initObjs[k]);
 	}
-	/*
-	for(var i=0;i<OF.length;i++){
-		for(var j=0; j<initObjs[i].length;j++){
-			OF[i].initOF(initObjs[i][j]);
-		}
-		
-	}
-	*/
-	
 };
 
 DAOManager.prototype.getOF=function(OF){
@@ -167,111 +174,25 @@ DAOManager.prototype.getOF=function(OF){
 };
 
 function GenericDAO(OF){
+	var oFile=OF;
 	var list= new Array();
-	list=OF.readAllOF();
+	list=oFile.readAllOF();
+	//experiment
+	for(var i=0; i<list.length;i++){
+		var indiv=oFile.readOF(i);
+	}
+	//experiment
 	this.getList=function(){return list;};
-}
-
-function WeaponDAO(OF){
-	var weaponList=new Array();
+	this.getItem=function(key){return oFile.readOF(key);};
+	this.getObjectCount=function(){return oFile.getObjectCount();};
+	this.readAllOF=function(){return oFile.readAllOF();};
 	
-	//var weaponOF= new WeaponOF();
-	//weaponList= weaponOF.readAll();
-	//init weapon object file
-	/*&
-	var OFweapon= new ObjectFile.Datastore();
-	OFweapon.setType('weapon');
-	OFweapon.setSize(16);
-	//init w/ some vals
-	initWeaponOF(OFweapon);
-	*/
-	//get list of results
-	weaponList=OF.readAllOF();
-	
-	this.getWeaponList=function(){ return weaponList;};
-}
-function AmmoDAO(OF){
-	var ammoList=new Array();
-	//var ammoOF= new AmmoOF();
-	/*
-	var OFammo= new ObjectFile.Datastore();
-	OFammo.setType('ammo');
-	OFammo.setSize(16);
-	initAmmoOF(OFammo);
-	*/
-	ammoList=OF.readAllOF();
-	this.getAmmoList=function(){return ammoList;};
-}
-function TargetDAO(OF){
-	var targetList=new Array();
-	targetList=OF.readAllOF();
-	this.getTargetList=function(){return targetList;};
-}
-/*
-function WeaponOF(){
-	
-	var weaponList=['rifle','pistol','revolver'];
-	this.readAll=function(){
-		return weaponList;
-	};
-}
-function AmmoOF(){
-	var ammoList=['9mm','38spl','357mag'];
-	this.readAll=function(){
-		return ammoList;
-	};
-}
-*/
-/*
-function initWeaponOF(objectFile){
-	//objectFile.flush();
-	//var weapons=['rifle','pistol','revolver','glock'];
-	var weapons=[
-	             new Weapon('rifle','0'),
-	             new Weapon('pistol','1'),
-	             new Weapon('revolver','2'),
-	             new Weapon('glock','3')];
-	for(var i=0; i< weapons.length; i++){
-		objectFile.writeOF(i,weapons[i]);
-	}
-	var count=objectFile.getObjectCount();
-	var empty;
-
 }
 
-function initAmmoOF(objectFile){
-	//objectFile.flush();
-	//var weapons=['rifle','pistol','revolver','glock'];
-	var weapons=[
-	             new Ammo('9mm','Winchester'),
-	             new Ammo('9mm','MagTech'),
-	             new Ammo('38spl','Winchester'),
-	             new Ammo('357mag','Hornady')];
-	for(var i=0; i< weapons.length; i++){
-		objectFile.writeOF(i,weapons[i]);
-	}
-	var count=objectFile.getObjectCount();
-	var empty;
-}
-function initTargetOF(objectFile){
-	//objectFile.flush();
-	//var weapons=['rifle','pistol','revolver','glock'];
-	var weapons=[
-	             new Ammo('target1','today'),
-	             new Ammo('target2','today'),
-	             new Ammo('target3','today'),
-	             new Ammo('target4','yesterday')];
-	for(var i=0; i< weapons.length; i++){
-		objectFile.writeOF(i,weapons[i]);
-	}
-	var count=objectFile.getObjectCount();
-	var empty;
-}
-*/
-
-function Weapon(name,number){
+function Weapon(name,number,owner){
 	this.name=name;
 	this.number=number;
+	this.owner=owner;
 }
 function Ammo(name,vendor){
 	this.name=name;

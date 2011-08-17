@@ -25,8 +25,14 @@ ObjectFile.Datastore = function(){
 	
 }();
  
-ObjectFile.Datastore.prototype.read= function(key){
-	return localStorage.getItem(key);
+ObjectFile.Datastore.prototype.readOF= function(key){
+	var type=this.getType();
+	var oKey=type+key;
+	var otherVal=localStorage.getItem(oKey);
+	var value= JSON.parse(window.localStorage.getItem(oKey));
+	var empty;
+	//return new Weapon('dave','gun');
+	return value;
 	//return "Read";
 };
 ObjectFile.Datastore.prototype.readAllOF= function(){
@@ -66,6 +72,9 @@ ObjectFile.Datastore.prototype.writeOF= function(key,value){
 	this.incrementCount();
 	var tot=this.getObjectCount();
 	localStorage[OFkey]=JSON.stringify(value);
+	var immRead=this.readOF(key);
+	var empty;
+	//localStorage.setItem(OFkey,JSON.stringify(value));
 	//return localStorage[key];
 	}
 };
