@@ -10,13 +10,7 @@ function eventWindowLoaded(){
 	localStorage.clear();
 	var daoManager= new DAOManager();
 	initForm(daoManager);
-	//document.getElementById('formWeapon').onmouseup=weaponController;
-	//document.getElementById('formWeapon').addEventListener('mouseup',function(){weaponController(daoManager)},false);
-
-	//document.getElementById('formAmmo').onmouseup=ammoController;
 	
-	//document.getElementById('formAmmo').addEventListener('mouseup',function(){ammoController(daoManager)},false);
-	//document.getElementById('formTarget').onmouseup=targetController;
 	//generic controller support
 	document.getElementById('formWeapon').addEventListener('mouseup',function(){genericController(daoManager,0)},false);
 	document.getElementById('formAmmo').addEventListener('mouseup',function(){genericController(daoManager,1)},false);
@@ -26,31 +20,15 @@ function eventWindowLoaded(){
 
 
 function initForm(daoManager){
-	//var weapons=['rifles','pistol','revolver'];
-	
-	
-	localStorage.setItem('name','dave');
-	//init dao Manager, get weaponDAO, ammoDAO
-	//var daoManager= new DAOManager();daoManager
-	
+	//fill out selection options in form
 	var weaponDAO=daoManager.getWeaponDAO();
-	//var weapons=weaponDAO.getWeaponList();
 	var weapons=weaponDAO.getList();
-	//experiment
-	var something=weaponDAO.getItem('2');
-	//experiment
-
 	
 	var ammoDAO=daoManager.getAmmoDAO();
-	//var ammo=ammoDAO.getAmmoList();
 	var ammo=ammoDAO.getList();
 
-	
 	var targetDAO=daoManager.getTargetDAO();
-	//var targets=targetDAO.getTargetList();
 	var targets=targetDAO.getList();
-
-	localStorage.setItem('name1','elsa');
 
 	var selectWeapon=document.getElementById('selectWeapon');
 	var selectAmmo=document.getElementById('selectAmmo');
@@ -60,17 +38,17 @@ function initForm(daoManager){
 	selectWeapon.options.length=0;
 	selectAmmo.options.length=0;
 	selectTarget.options.length=0;
-	
+	//generic fill
+	var select=[selectWeapon,selectAmmo,selectTarget];
+	var fill=[weapons,ammo,targets];
+	//fillSelect(select,fill);
 	//get values to fill ininitForm
 	for (var i=0; i< weapons.length; i++){
-		//document.write('Updating:'+weapons[i]);
 		selectWeapon.options[i]=new Option(weapons[i].name,i);
-		//selectWeapon.options[i].Text=weapons[i];
+		
 	}
 	for (var i=0; i< targets.length; i++){
-		//document.write('Updating:'+weapons[i]);
 		selectTarget.options[i]=new Option(targets[i].name,i);
-		//selectWeapon.options[i].Text=weapons[i];
 	}
 	for(var i=0; i< ammo.length;i++){
 		selectAmmo.options[i]=new Option(ammo[i].name,i);
@@ -78,31 +56,16 @@ function initForm(daoManager){
 	
 }
 
-function weaponController(daoManager){
-	var weaponDAO= daoManager.getWeaponDAO();
-	var list= new Array();
-	list=weaponDAO.getList();
-	
-	var selected=document.getElementById('selectWeapon').selectedIndex;
-	var options=document.getElementById('selectWeapon').options;
-	var weapon=weaponDAO.getItem(options[selected].value);
-	//var dbWeapon=JSON.parse(localStorage.getItem('weapon5'));
-	var len=window.localStorage.length;
-	var count=weaponDAO.getObjectCount();
-	alert('You clicked:'+options[selected].text+':owner:'+weapon.owner+'manu:'+weapon.manu);
+//generic to fix above duplicate code maybe, still needs work
+function fillSelect(select,fill){
+	//fill for each element in array
+	for(k=0; k<select.length;k++){
+		for(var i=0; i< fill[k].length;i++){
+			select[k].options[i]=new Option(fill[i].name,i);
+		}
+	}
 }
 
-function ammoController(daoManager){
-	var ammoDAO=daoManager.getAmmoDAO();
-	//var list=new Array();
-	//list=ammoDAO.readAllOF();
-	var selected=document.getElementById('selectAmmo').selectedIndex;
-	var options=document.getElementById('selectAmmo').options;
-	var ammo=ammoDAO.getItem(options[selected].value);
-	var propString= getProps(ammo);
-
-	alert('You clicked:'+options[selected].text+ propString);
-}
 function genericController(daoManager,number){
 	var genericDAO=daoManager.getDAOList(number);
 	var type=genericDAO.getType();
@@ -119,12 +82,6 @@ function getProps(item){
 		result += prop +':'+item[prop]+' ';
 	}
 	return result;
-}
-
-function targetController(){
-	var selected=document.getElementById('selectTarget').selectedIndex;
-	var options=document.getElementById('selectTarget').options;
-	alert('You clicked:'+options[selected].text);
 }
 
 function DAOManager(){
