@@ -1,9 +1,4 @@
-//listener to click on form
-//init to fill in select
-
-//fill out the select in the page
-	
-
+//model view controller for Object File access
 window.addEventListener('load', eventWindowLoaded,false);
 
 function eventWindowLoaded(){
