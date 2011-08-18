@@ -10,12 +10,10 @@ function eventWindowLoaded(){
 	localStorage.clear();
 	var daoManager= new DAOManager();
 	initForm(daoManager);
-	
 	//generic controller support
 	document.getElementById('formWeapon').addEventListener('mouseup',function(){genericController(daoManager,0)},false);
 	document.getElementById('formAmmo').addEventListener('mouseup',function(){genericController(daoManager,1)},false);
 	document.getElementById('formTarget').addEventListener('mouseup',function(){genericController(daoManager,2)},false);
-
 }
 
 
@@ -41,18 +39,8 @@ function initForm(daoManager){
 	//generic fill
 	var select=[selectWeapon,selectAmmo,selectTarget];
 	var fill=[weapons,ammo,targets];
-	//fillSelect(select,fill);
-	//get values to fill ininitForm
-	for (var i=0; i< weapons.length; i++){
-		selectWeapon.options[i]=new Option(weapons[i].name,i);
-		
-	}
-	for (var i=0; i< targets.length; i++){
-		selectTarget.options[i]=new Option(targets[i].name,i);
-	}
-	for(var i=0; i< ammo.length;i++){
-		selectAmmo.options[i]=new Option(ammo[i].name,i);
-	}
+	fillSelect(select,fill);
+	
 	
 }
 
@@ -61,7 +49,7 @@ function fillSelect(select,fill){
 	//fill for each element in array
 	for(k=0; k<select.length;k++){
 		for(var i=0; i< fill[k].length;i++){
-			select[k].options[i]=new Option(fill[i].name,i);
+			select[k].options[i]=new Option(fill[k][i].name,i);
 		}
 	}
 }
@@ -76,8 +64,9 @@ function genericController(daoManager,number){
 	var propString=getProps(generic);
 	alert ('You Clicked:'+options[selected].text+propString);
 }
+
 function getProps(item){
-	var result='';
+	var result=' ';
 	for(var prop in item){
 		result += prop +':'+item[prop]+' ';
 	}
@@ -110,11 +99,8 @@ function DAOManager(){
 	var objectFiles=new Array();
 	objectFiles=this.getObjectFiles();
 	
-
 	this.getOF(objectFiles);
 	this.initOF(objectFiles,initObjs);
-	//daoManager.getOF(objectFiles);
-	//daoManager.initOF(objectFiles,initObjs);
 	
 	//create DAOs
 	
@@ -122,10 +108,7 @@ function DAOManager(){
 	for(var i=0;i< objectFiles.length;i++){
 		daoList[i]= new GenericDAO(objectFiles[i]);
 	}
-	//experiment
-	//alert('force it:'+daoList[0].getItem(2).name);
-	//experiment
-	//return DAOs
+	
 	this.getWeaponDAO=function(){return daoList[0];};
 	this.getAmmoDAO=function(){return daoList[1];};
 	this.getTargetDAO=function(){return daoList[2];};
@@ -167,11 +150,6 @@ function GenericDAO(OF){
 	var oFile=OF;
 	var list= new Array();
 	list=oFile.readAllOF();
-	//experiment
-	for(var i=0; i<list.length;i++){
-		var indiv=oFile.readOF(i);
-	}
-	//experiment
 	this.getList=function(){return list;};
 	this.getItem=function(key){return oFile.readOF(key);};
 	this.getObjectCount=function(){return oFile.getObjectCount();};
