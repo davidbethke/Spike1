@@ -10,9 +10,21 @@ function eventWindowLoaded(){
 	document.getElementById('formAmmo').addEventListener('mouseup',function(){genericController(daoManager,1)},false);
 	document.getElementById('formTarget').addEventListener('mouseup',function(){genericController(daoManager,2)},false);
 	document.getElementById('divDrills').addEventListener('mouseup',function(){genericControllerDiv(daoManager,3)},false);
+	document.getElementById('pDrills').addEventListener('mouseup',function(){showHide('divDrills')},false);
 
 }
-
+function showHide(divId){
+	var elem=document.getElementById(divId);
+	/*
+	if(document.getElementById(divId).style.display == "none"){
+		document.getElementById(divId).style.display = "block"; }
+	else { 
+		document.getElementById(divId).style.display = "none"; 
+		}
+		*/
+	elem.className=(elem.className =='hidden')?'unhidden':'hidden';
+	
+}
 
 function initForm(daoManager){
 	//fill out selection options in form
