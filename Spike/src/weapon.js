@@ -9,7 +9,7 @@ function eventWindowLoaded(){
 	document.getElementById('formWeapon').addEventListener('mouseup',function(){genericController(daoManager,0)},false);
 	document.getElementById('formAmmo').addEventListener('mouseup',function(){genericController(daoManager,1)},false);
 	document.getElementById('formTarget').addEventListener('mouseup',function(){genericController(daoManager,2)},false);
-	document.getElementById('divDrills').addEventListener('mouseup',function(){genericControllerDiv(daoManager,3)},false);
+	document.getElementById('divDrills').getElementsByTagName('p').addEventListener('mouseup',function(){genericControllerDiv(daoManager,3)},false);
 	document.getElementById('pDrills').addEventListener('mouseup',function(){showHide('divDrills')},false);
 
 }
