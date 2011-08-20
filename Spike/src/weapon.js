@@ -140,26 +140,29 @@ function genericControllerDiv(evt,daoManager,number){
 	// call new if new selected, pass it a genericObject
 	if (selectedId == 'new'){
 		var gObj=genericDAO.getItem(0);
-		newFormController(gObj);
-		alert('You\'re new');
+		newFormController(gObj,daoManager,number);
+		//alert('You\'re new');
 	}
-	var itemNumber=selectedP.getAttribute('value');
-	var genericObj=genericDAO.getItem(itemNumber);
-	var results= getPropsVals(genericObj);
-	
-	// works
-	alert('You clicked:'+results);
+	else{
+		var itemNumber=selectedP.getAttribute('value');
+		var genericObj=genericDAO.getItem(itemNumber);
+		var results= getPropsVals(genericObj);
+		// works
+		alert('You clicked:'+results);
+	}
 }
 //create new form to add an item
-function newFormController(gObj){
+function newFormController(gObj,daoManager,number){
 	var results=getProps(gObj);
 	//create form
 	var newDiv=document.createElement('div');
-	newDiv.setAttribute('id', 'newForm');
+	newDiv.setAttribute('id', 'divForm');
 	var newForm=document.createElement('form');
+	newForm.setAttribute('id', 'newForm');
 	for(var i=0; i< results.length;i++){
 		var newInput=document.createElement('input');
 		var newLabel=document.createElement('label');
+		
 		newLabel.setAttribute('for', results[i]);
 		var newText=document.createTextNode(results[i]);
 		newLabel.appendChild(newText);
@@ -167,13 +170,45 @@ function newFormController(gObj){
 		newInput.setAttribute('type', 'text');
 		newInput.setAttribute('name', results[i]);
 		newInput.setAttribute('id', results[i]);
+		//newLabel.appendChild(lineBreak);
 		newForm.appendChild(newLabel);
 		newForm.appendChild(newInput);
 		//newForm.elements[i].innerHTML=results[i];
 	}
-	
+	/*
+	for(var i=0; i< results.length;i++){
+
+	var lineBreak=document.createElement('br');
+	newForm.elements[i].appendChild(linebreak);
+	}
+	*/
+	var newInput=document.createElement('input');
+	newInput.setAttribute('type', 'submit');
+	newInput.setAttribute('value', 'Add Item');
+	newForm.appendChild(newInput);
 	newDiv.appendChild(newForm);
 	document.body.appendChild(newDiv);
+	// add an event listener, pass it the daoManager, process the form
+	var formId=document.getElementById('newForm');
+	formId.addEventListener('submit',function(){processForm(daoManager,number)},false);
+}
+function processForm(daoManager,number){
+	// add a call to validation here
+	var genericDAO=daoManager.getDAOList(number);
+// really need to have an object factory that will return a new object based on the number type.Object
+	//instead Ill try to build a generic Object, from the props and values from the form
+	var genericObject=genericDAO.getItem(0);
+	var props= getProps(genericObject);
+	//props contains an array of properties to build the  new object
+	// can I use the this keyword to access the form?
+	// I can pull the property names using the getProps function on an object created w/ the DAO manager
+	var newObject= new Object();
+	for(var prop in props){
+		var temp = props[prop];
+		var currentEle=document.getElementById(props[prop]);
+		newObject[props[prop]]=currentEle.value;
+	}
+	alert('submit!');
 }
 
 function getPropsVals(item){
@@ -280,6 +315,7 @@ function GenericDAO(OF){
 	list=oFile.readAllOF();
 	this.getList=function(){return list;};
 	this.getItem=function(key){return oFile.readOF(key);};
+	this.setItem=function(value){var key= this.getObjectCount();oFile.write(key,value);}; //Object count 1 more than key value, i hope
 	this.getObjectCount=function(){return oFile.getObjectCount();};
 	this.readAllOF=function(){return oFile.readAllOF();};
 	this.getType=function(){return oFile.getType();}; // for generic Controller to retrieve Type and plug into DOM element search

@@ -4,3 +4,10 @@
 .unhidden{
 	visibility:visible;
 }
+div{
+	float:left;
+}
+label{
+	display:block;
+	clear:left;
+}
