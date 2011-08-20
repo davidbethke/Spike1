@@ -9,7 +9,7 @@ function eventWindowLoaded(){
 	document.getElementById('formWeapon').addEventListener('mouseup',function(){genericController(daoManager,0)},false);
 	document.getElementById('formAmmo').addEventListener('mouseup',function(){genericController(daoManager,1)},false);
 	document.getElementById('formTarget').addEventListener('mouseup',function(){genericController(daoManager,2)},false);
-	document.getElementById('divDrills').getElementsByTagName('p').addEventListener('mouseup',function(){genericControllerDiv(daoManager,3)},false);
+	document.getElementById('divDrills').addEventListener('mouseup',function(evt){genericControllerDiv(evt,daoManager,3)},false);
 	document.getElementById('pDrills').addEventListener('mouseup',function(){showHide('divDrills')},false);
 
 }
@@ -122,13 +122,18 @@ function genericController(daoManager,number){
 	alert ('You Clicked:'+options[selected].text+propString);
 }
 
-function genericControllerDiv(daoManager,number){
+function genericControllerDiv(evt,daoManager,number){
 	var genericDAO=daoManager.getDAOList(number);
 	var type= genericDAO.getType();
 	type='div'+type;
+	var selectedP=evt.target;
+	var itemNumber=selectedP.getAttribute('value');
+	var genericObj=genericDAO.getItem(itemNumber);
+	var results= getProps(genericObj);
+	
 	// need to figure out how to parse thru list of class=type and look at the value of 'checked' as true, must add a listener to each <p>
 	// for now alert
-	alert('You clicked:'+type);
+	alert('You clicked:'+results);
 }
 
 function getProps(item){
