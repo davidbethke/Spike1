@@ -70,6 +70,12 @@ function initForm(daoManager){
 	//hack for div, call fillDiv
 	var drillSelect=[selectDrills];
 	var drillFill=[drills];
+	//var newObj= new NewObj();
+	var newFill=[new NewObj()
+				];
+	var newFill2=[newFill];
+	var newLen= newFill.length;
+	fillDiv(drillSelect,newFill2);
 	fillDiv(drillSelect,drillFill);
 	
 	
@@ -100,7 +106,9 @@ function drawP(select,fill,value){
 	//var selectElement=document.getElementById(divSelect); // get handle of div element to append to
 	var newElement=document.createElement('p');
 	var newText=document.createTextNode(fill.name);
-	newElement.setAttribute('id',select.id+value);
+	//newElement.setAttribute('id',select.id+value);
+	newElement.setAttribute('id',fill.name);
+
 	newElement.setAttribute('value',value);
 	newElement.setAttribute('class',select.id);
 	newElement.setAttribute('checked','false');
@@ -131,8 +139,7 @@ function genericControllerDiv(evt,daoManager,number){
 	var genericObj=genericDAO.getItem(itemNumber);
 	var results= getProps(genericObj);
 	
-	// need to figure out how to parse thru list of class=type and look at the value of 'checked' as true, must add a listener to each <p>
-	// for now alert
+	// works
 	alert('You clicked:'+results);
 }
 
@@ -259,4 +266,7 @@ function Drills(name,stance,grip, draw,firePattern){
 	this.draw=draw;
 	this.firePattern=firePattern;
 }
-
+function NewObj(name){
+	 this.name='new';
+	
+}
