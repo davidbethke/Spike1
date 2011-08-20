@@ -208,7 +208,12 @@ function processForm(daoManager,number){
 		var currentEle=document.getElementById(props[prop]);
 		newObject[props[prop]]=currentEle.value;
 	}
-	alert('submit!');
+	// write newly created object
+	genericDAO.setItem(newObject);
+	// test it out read it back
+	var count=genericDAO.getObjectCount()-1;
+	var readObj=genericDAO.getItem(count);
+	alert('submit!'+readObj.stance);
 }
 
 function getPropsVals(item){
@@ -315,7 +320,7 @@ function GenericDAO(OF){
 	list=oFile.readAllOF();
 	this.getList=function(){return list;};
 	this.getItem=function(key){return oFile.readOF(key);};
-	this.setItem=function(value){var key= this.getObjectCount();oFile.write(key,value);}; //Object count 1 more than key value, i hope
+	this.setItem=function(value){var key= this.getObjectCount();/* not needed for writeOFvar type=this.getType(); key=type+key;*/oFile.writeOF(key,value);}; //Object count 1 more than key value, i hope
 	this.getObjectCount=function(){return oFile.getObjectCount();};
 	this.readAllOF=function(){return oFile.readAllOF();};
 	this.getType=function(){return oFile.getType();}; // for generic Controller to retrieve Type and plug into DOM element search
