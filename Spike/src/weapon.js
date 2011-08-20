@@ -135,18 +135,61 @@ function genericControllerDiv(evt,daoManager,number){
 	var type= genericDAO.getType();
 	type='div'+type;
 	var selectedP=evt.target;
+	var selectedId= selectedP.getAttribute('id');
+	
+	// call new if new selected, pass it a genericObject
+	if (selectedId == 'new'){
+		var gObj=genericDAO.getItem(0);
+		newFormController(gObj);
+		alert('You\'re new');
+	}
 	var itemNumber=selectedP.getAttribute('value');
 	var genericObj=genericDAO.getItem(itemNumber);
-	var results= getProps(genericObj);
+	var results= getPropsVals(genericObj);
 	
 	// works
 	alert('You clicked:'+results);
 }
+//create new form to add an item
+function newFormController(gObj){
+	var results=getProps(gObj);
+	//create form
+	var newDiv=document.createElement('div');
+	newDiv.setAttribute('id', 'newForm');
+	var newForm=document.createElement('form');
+	for(var i=0; i< results.length;i++){
+		var newInput=document.createElement('input');
+		var newLabel=document.createElement('label');
+		newLabel.setAttribute('for', results[i]);
+		var newText=document.createTextNode(results[i]);
+		newLabel.appendChild(newText);
+		//newInput.innerHTML=results[i];
+		newInput.setAttribute('type', 'text');
+		newInput.setAttribute('name', results[i]);
+		newInput.setAttribute('id', results[i]);
+		newForm.appendChild(newLabel);
+		newForm.appendChild(newInput);
+		//newForm.elements[i].innerHTML=results[i];
+	}
+	
+	newDiv.appendChild(newForm);
+	document.body.appendChild(newDiv);
+}
 
-function getProps(item){
+function getPropsVals(item){
 	var result=' ';
 	for(var prop in item){
 		result += prop +':'+item[prop]+' ';
+	}
+	return result;
+}
+//kinda hack to support newFormController
+function getProps(item){
+	var result=new Array();
+	var i=0;
+	for(var prop in item){
+		result[i]=prop;
+		i++;
 	}
 	return result;
 }
